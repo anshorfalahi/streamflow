@@ -39,10 +39,11 @@ process.on('uncaughtException', (error) => {
 const app = express();
 app.set('trust proxy', 1);
 const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20, // Naikkan limit jadi 20 atau lebih
-  standardHeaders: true,
-  legacyHeaders: false,
+  windowMs: 15 * 60 * 1000, // 15 menit
+  max: 100,                 // max 100 request per 15 menit per IP
+  standardHeaders: true,   // pakai RateLimit-* header standar
+  legacyHeaders: false,    // jangan pakai header lama
+  message: "Terlalu banyak permintaan dari IP ini, coba lagi nanti.",
 });
 app.use(limiter);
 app.use((req, res, next) => {
