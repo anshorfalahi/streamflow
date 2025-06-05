@@ -39,12 +39,16 @@ process.on('uncaughtException', (error) => {
 const app = express();
 app.set('trust proxy', 1);
 const limiter = rateLimit({
-  windowMs: 60 * 1000,  // 1 menit
-  max: 10,              // max 10 request per IP per menit
-  standardHeaders: true, // Return rate limit info di header `RateLimit-*`
-  legacyHeaders: false,  // Disable header `X-RateLimit-*`
+  windowMs: 60 * 1000,
+  max: 20, // Naikkan limit jadi 20 atau lebih
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use(limiter);
+app.use((req, res, next) => {
+  console.log('IP client:', req.ip);
+  next();
+});
 const port = process.env.PORT || 7575;
 const tokens = new csrf();
 ensureDirectories();
