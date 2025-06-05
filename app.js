@@ -148,6 +148,12 @@ app.use(function (req, res, next) {
   res.locals.csrfToken = tokens.create(req.session.csrfSecret);
   next();
 });
+app.set('trust proxy', 1);
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 menit
+  max: 100, // limit setiap IP 100 request per window
+});
+app.use(limiter);
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
